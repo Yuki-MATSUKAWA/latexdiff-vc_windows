@@ -650,12 +650,22 @@ sub compresspages {
 sub checkout_dir {
   my ($rev,$dirname)=@_;
 
+  # Convert Windows-style paths to Unix-style.
+  $dirname =~ s/\\/\//g;
+
   unless (-e $dirname) { mkpath([ $dirname ]) or die "Cannot mkdir $dirname ." ;}
   if ( $vc eq "SVN" ) {
     system("svn checkout -r $rev $rootdir $dirname")==0 or die "Something went wrong in executing:  svn checkout -r $rev $rootdir $dirname";
   } elsif ( $vc eq "GIT" ) {
     $rev="HEAD" if length($rev)==0;
-    system("git archive --format=tar $rev | ( cd $dirname ; tar -xf -)")==0 or die "Something went wrong in executing:  git archive --format=tar $rev | ( cd $dirname ; tar -xf -)";
+    # Set the name of the temporary tar file.
+    my $tarfile = "temp_archive.tar";
+    # Create an archive using the git archive command.
+    system("git archive --format=tar $rev > $tarfile")==0 or die "Failed to create archive using: git archive --format=tar $rev > $tarfile";
+    # Extract the archive to a specified directory using the tar command.
+    system("tar -xf $tarfile -C $dirname")==0 or die "Failed to extract $tarfile to $dirname";
+    # Delete the temporary files.
+    unlink $tarfile or warn "Could not remove temporary file $tarfile: $!";
   } elsif ( $vc eq "HG" ) {
     system("hg archive --type files -r $rev $dirname")==0 or die "Something went wrong in executing:  hg archive --type files -r $rev $dirname";
   } else {
