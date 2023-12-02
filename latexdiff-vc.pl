@@ -475,7 +475,8 @@ while ( $infile=$file2=shift @files ) {
 
   # Remaining options are passed to latexdiff
   if (scalar(@ldoptions) > 0 ) {
-    $options = "\'" . join("\' \'",@ldoptions) . "\'";
+    # Change the way options are passed.
+    $options = join(" ",@ldoptions);
   } else {
     $options = "";
   }
