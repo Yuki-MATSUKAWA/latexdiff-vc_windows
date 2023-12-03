@@ -33,18 +33,57 @@ latexdiff-vc -e utf8 -t CFONT --flatten --git --force -r HEAD^ main.tex
 | HEAD^ | main-diffHEAD- |
 | HEAD^^ | main-diffHEAD-- |
 | HEAD^2 | main-diffHEAD-2 |
-| HEAD~ | main-diffHEAD0- |
+| HEAD~ | main-diffHEAD- |
 | HEAD~~ | main-diffHEAD-- |
 | HEAD~2 | main-diffHEAD-2 |
 
+ハッシュ値で指定する場合は `^` も `~` も含まないためそのまま出力されます．
 
 ### デバッグの詳細
 
+#### オプションの渡し方を変更
+```perl:diff_latexdiff-vc.pl
+  # Remaining options are passed to latexdiff
+  if (scalar(@ldoptions) > 0 ) {
+-   $options = "\'" . join("\' \'",@ldoptions) . "\'";
++   # Change the way options are passed.
++   $options = join(" ",@ldoptions);
+  } else {
+    $options = "";
+  }
+```
+
+#### `checkout_dir` 内の内容を修正
+```perl:diff_latexdiff-vc.pl
+sub checkout_dir {
+  my ($rev,$dirname)=@_;
+
++ # Convert Windows-style paths to Unix-style.
++ $dirname =~ s/\\/\//g;
++
+  unless (-e $dirname) { mkpath([ $dirname ]) or die "Cannot mkdir $dirname ." ;}
+  if ( $vc eq "SVN" ) {
+    system("svn checkout -r $rev $rootdir $dirname")==0 or die "Something went wrong in executing:  svn checkout -r $rev $rootdir $dirname";
+  } elsif ( $vc eq "GIT" ) {
+    $rev="HEAD" if length($rev)==0;
+-   system("git archive --format=tar $rev | ( cd $dirname ; tar -xf -)")==0 or die "Something went wrong in executing:  git archive --format=tar $rev | ( cd $dirname ; tar -xf -)";
++   # Set the name of the temporary tar file.
++   my $tarfile = "temp_archive.tar";
++   # Create an archive using the git archive command.
++   system("git archive --format=tar $rev > $tarfile")==0 or die "Failed to create archive using: git archive --format=tar $rev > $tarfile";
++   # Extract the archive to a specified directory using the tar command.
++   system("tar -xf $tarfile -C $dirname")==0 or die "Failed to extract $tarfile to $dirname";
++   # Delete the temporary files.
++   unlink $tarfile or warn "Could not remove temporary file $tarfile: $!";
+  } elsif ( $vc eq "HG" ) {
+    system("hg archive --type files -r $rev $dirname")==0 or die "Something went wrong in executing:  hg archive --type files -r $rev $dirname";
+  } else {
+```
 
 
 
 ### 参考文献
-* [GitHub: `thesis_template_ou_es`，『`latexdiff` を用いた差分管理』](https://github.com/ryo-ARAKI/thesis_template_ou_es#latexdiff-%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E5%B7%AE%E5%88%86%E7%AE%A1%E7%90%86)
+* [GitHub: thesis_template_ou_es，『`latexdiff` を用いた差分管理』](https://github.com/ryo-ARAKI/thesis_template_ou_es#latexdiff-%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E5%B7%AE%E5%88%86%E7%AE%A1%E7%90%86)
 * [Qiita: git+latexdiff-vcで快適にHEADとの差分を確認しながら論文を執筆する for Windows](https://qiita.com/take_me/items/e49c544f9298f936b8fd)
 
 
