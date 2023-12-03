@@ -381,9 +381,22 @@ if ( scalar(@revs) == 0 ) {
 }
 
 if ( scalar(@revs) == 2 ) {
-  $append = "-diff$revs[0]-$revs[1]";
+  # Replace each '^' with '-' and each '~' with '_'
+  my $rev0 = $revs[0];
+  my $rev1 = $revs[1];
+  $rev0 =~ s/\^/-/g;
+  $rev1 =~ s/\^/-/g;
+  $rev0 =~ s/~/_/g;
+  $rev1 =~ s/~/_/g;
+
+  $append = "-diff$rev0-$rev1";
 } elsif ( scalar(@revs) == 1 || $revs[0] ) {
-  $append = "-diff$revs[0]";
+  # Replace each '^' with '-' and each '~' with '_'
+  my $rev = $revs[0];
+  $rev =~ s/\^/-/g;
+  $rev =~ s/~/_/g;
+
+  $append = "-diff$rev";
 } else {
   $append = "-diff";
 }
