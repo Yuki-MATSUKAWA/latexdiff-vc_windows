@@ -231,5 +231,5 @@ if ( scalar(@revs) == 2 ) {
 ```
 
 ## 参考文献 References (in Japanese)
-* [GitHub: thesis_template_ou_es，『`latexdiff` を用いた差分管理』](https://github.com/ryo-ARAKI/thesis_template_ou_es#latexdiff-%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E5%B7%AE%E5%88%86%E7%AE%A1%E7%90%86)
+* [GitHub: thesis_template_ou_es，『latexdiff を用いた差分管理』](https://github.com/ryo-ARAKI/thesis_template_ou_es#latexdiff-%E3%82%92%E7%94%A8%E3%81%84%E3%81%9F%E5%B7%AE%E5%88%86%E7%AE%A1%E7%90%86)
 * [Qiita: git+latexdiff-vcで快適にHEADとの差分を確認しながら論文を執筆する for Windows](https://qiita.com/take_me/items/e49c544f9298f936b8fd)
