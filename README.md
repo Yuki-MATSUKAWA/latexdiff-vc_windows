@@ -33,16 +33,16 @@ latexdiff-vc -e utf8 -t CFONT --flatten --git --force -r HEAD^ main.tex
 | HEAD^ | main-diffHEAD- |
 | HEAD^^ | main-diffHEAD-- |
 | HEAD^2 | main-diffHEAD-2 |
-| HEAD~ | main-diffHEAD- |
-| HEAD~~ | main-diffHEAD-- |
-| HEAD~2 | main-diffHEAD-2 |
+| HEAD~ | main-diffHEAD_ |
+| HEAD~~ | main-diffHEAD__ |
+| HEAD~2 | main-diffHEAD_2 |
 
 ハッシュ値で指定する場合は `^` も `~` も含まないためそのまま出力されます．
 
 ### デバッグの詳細
 
 #### オプションの渡し方を変更
-```perl:diff_latexdiff-vc.pl
+```diff
   # Remaining options are passed to latexdiff
   if (scalar(@ldoptions) > 0 ) {
 -   $options = "\'" . join("\' \'",@ldoptions) . "\'";
@@ -54,7 +54,7 @@ latexdiff-vc -e utf8 -t CFONT --flatten --git --force -r HEAD^ main.tex
 ```
 
 #### `checkout_dir` 内の内容を修正
-```perl:diff_latexdiff-vc.pl
+```diff
 sub checkout_dir {
   my ($rev,$dirname)=@_;
 
@@ -78,6 +78,32 @@ sub checkout_dir {
   } elsif ( $vc eq "HG" ) {
     system("hg archive --type files -r $rev $dirname")==0 or die "Something went wrong in executing:  hg archive --type files -r $rev $dirname";
   } else {
+```
+
+#### `^` と `~` を `-` と `_` で置換
+```diff
+if ( scalar(@revs) == 2 ) {
+- $append = "-diff$revs[0]-$revs[1]";
++ # Replace each '^' with '-' and each '~' with '_'
++ my $rev0 = $revs[0];
++ my $rev1 = $revs[1];
++ $rev0 =~ s/\^/-/g;
++ $rev1 =~ s/\^/-/g;
++ $rev0 =~ s/~/_/g;
++ $rev1 =~ s/~/_/g;
++
++ $append = "-diff$rev0-$rev1";
+} elsif ( scalar(@revs) == 1 || $revs[0] ) {
+- $append = "-diff$revs[0]";
++ # Replace each '^' with '-' and each '~' with '_'
++ my $rev = $revs[0];
++ $rev =~ s/\^/-/g;
++ $rev =~ s/~/_/g;
++
++ $append = "-diff$rev";
+} else {
+  $append = "-diff";
+}
 ```
 
 
