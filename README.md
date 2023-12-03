@@ -137,7 +137,7 @@ You may use commands like this for execution:
 ```
 latexdiff-vc -e utf8 -t CFONT --flatten --git --force -r HEAD^ main.tex
 ```
-However, the generated file name will be `main-diffHEAD^.tex``.
+However, the generated file name will be `main-diffHEAD^.tex`.
 Similarly, if you specify `HEAD^` as `HEAD~` or `HEAD~2`, the file names will be `main-diffHEAD~` or `main-diffHEAD~2`, respectively.
 In the terminal, having `^` or `~` in file names can cause errors, so they are replaced with `-` and `_` respectively.
 Please be cautious when handling files after running `latexdiff-vc`.
