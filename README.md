@@ -40,7 +40,8 @@ latexdiff-vc -e utf8 -t CFONT --flatten --git --force -r HEAD^ main.tex
 ハッシュ値で指定する場合は `^` も `~` も含まないためそのまま出力されます．
 
 ### デバッグの詳細
-
+デバッグの詳細を説明します．
+興味ない人は読まなくて大丈夫です．
 #### オプションの渡し方を変更
 ```diff
   # Remaining options are passed to latexdiff
