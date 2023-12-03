@@ -42,7 +42,10 @@ latexdiff-vc -e utf8 -t CFONT --flatten --git --force -r HEAD^ main.tex
 ### デバッグの詳細
 デバッグの詳細を説明します．
 興味ない人は読まなくて大丈夫です．
+
 #### オプションの渡し方を変更
+配列の各要素をスペースで結合しました．
+オプションがスペースを含まない場合はこの処理で問題ありません．
 ```diff
   # Remaining options are passed to latexdiff
   if (scalar(@ldoptions) > 0 ) {
@@ -55,6 +58,9 @@ latexdiff-vc -e utf8 -t CFONT --flatten --git --force -r HEAD^ main.tex
 ```
 
 #### `checkout_dir` 内の内容を修正
+`checkout_dir` の内容を修正しました．
+`tar` は Unix スタイルのパス区切り（`/`）を期待している可能性があるため，Windows スタイルのパス区切り（`\`）を Unix スタイルに変更しました．
+また，パイプ（`|`）を使用せずにコマンドを分割することで問題を回避しました．
 ```diff
 sub checkout_dir {
   my ($rev,$dirname)=@_;
@@ -82,6 +88,8 @@ sub checkout_dir {
 ```
 
 #### `^` と `~` を `-` と `_` で置換
+この変更は行わなくても，`latexdiff-vc` 自体を実行することは可能です．
+ただし，出力されるファイル名に `^` や `~` が入っているとその後のファイル操作でエラーが出る可能性があるので，`-` と `_` に置換するようにしました．
 ```diff
 if ( scalar(@revs) == 2 ) {
 - $append = "-diff$revs[0]-$revs[1]";
