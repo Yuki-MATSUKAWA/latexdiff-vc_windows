@@ -30,12 +30,12 @@ latexdiff-vc -e utf8 -t CFONT --flatten --git --force -r HEAD^ main.tex
 
 | 指定するコミット | 出力されるファイル名 |
 | ------ | --------------- |
-| HEAD^ | main-diffHEAD- |
-| HEAD^^ | main-diffHEAD-- |
-| HEAD^2 | main-diffHEAD-2 |
-| HEAD~ | main-diffHEAD_ |
-| HEAD~~ | main-diffHEAD__ |
-| HEAD~2 | main-diffHEAD_2 |
+| `HEAD^` | `main-diffHEAD-` |
+| `HEAD^^` | `main-diffHEAD--` |
+| `HEAD^2` | `main-diffHEAD-2` |
+| `HEAD~` | `main-diffHEAD_` |
+| `HEAD~~` | `main-diffHEAD__` |
+| `HEAD~2` | `main-diffHEAD_2` |
 
 ハッシュ値で指定する場合は `^` も `~` も含まないためそのまま出力されます．
 
